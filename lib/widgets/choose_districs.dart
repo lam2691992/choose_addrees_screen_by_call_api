@@ -50,7 +50,15 @@ class _ChooseDistricsState extends State<ChooseDistrics> {
       if (response.statusCode == 200) {
         DistricModel districModel = DistricModel.fromJson(response.data);
         setState(() {
-          _dataList = districModel.data;
+           _dataList = districModel.data?.map((data) => Data2(
+          id: data.id,
+          name: data.name,
+          nameEn: data.nameEn,
+          fullName: data.fullName,
+          fullNameEn: data.fullNameEn,
+          latitude: data.latitude,
+          longitude: data.longitude
+        )).toList();
         });
       } else {
         throw Exception('Failed to load data');

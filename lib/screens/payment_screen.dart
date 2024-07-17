@@ -18,21 +18,26 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   String? _selectedProvinceId;
-  String? _selectedDistrictId;
+  String? _selectedDistricId;
+  String? _selectedCommuneId;
 
   void _onProvinceSelected(String provinceId) {
     setState(() {
       _selectedProvinceId = provinceId;
-      _selectedDistrictId = null;
+      _selectedDistricId = null;
     });
   }
-
-  void _onDistrictSelected(String districtId) {
+  void _onDistricSelected (String districId) {
+  setState(() {
+    _selectedDistricId = districId;
+    _selectedCommuneId = null;
+  });
+}
+  void _onCommunesSelected ( String communeId) {
     setState(() {
-      _selectedDistrictId = districtId; // Cập nhật giá trị quận/huyện khi chọn
+      _selectedCommuneId = communeId;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,20 +104,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: ChooseDistrics(
                 provinceId: _selectedProvinceId ?? '',
-                onDistricSelected: (String districId) {},
+                onDistricSelected: _onDistricSelected,
               ),
             ),
             const SizedBox(
               height: 5,
             ),
             Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 12),
-  child: ChooseCommunes(
-    provinceId: _selectedProvinceId ?? '',
-    districId: _selectedDistrictId ?? '',
-  ),
-),
-
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: ChooseCommunes(
+                districId: _selectedDistricId ?? '',
+                onComunesSelected: _onCommunesSelected,
+              ),
+            ),
             const SizedBox(
               height: 12,
             ),

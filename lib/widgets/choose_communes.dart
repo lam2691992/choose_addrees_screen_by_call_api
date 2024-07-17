@@ -4,14 +4,19 @@ import 'package:dio/dio.dart';
 
 
 class ChooseCommunes extends StatefulWidget {
-  final String provinceId;
+
   final String districId;
 
-  const ChooseCommunes({super.key, required this.provinceId, required this.districId});
+  const ChooseCommunes({super.key,
+    required this.districId,
+  required void Function(String communeId)
+   onComunesSelected});
 
   @override
   // ignore: library_private_types_in_public_api
   _ChooseCommunesState createState() => _ChooseCommunesState();
+  
+  void onCommuneSelected(String s) {}
 }
 
 class _ChooseCommunesState extends State<ChooseCommunes> {
@@ -34,33 +39,41 @@ class _ChooseCommunesState extends State<ChooseCommunes> {
     }
   }
 
-  void _loadDataFromApi() async {
-    if (widget.districId.isEmpty) {
-      setState(() {
-        _dataList = [];
-      });
-      return;
-    }
-try {
-  apiUrl = 'https://esgoo.net/api-tinhthanh/3/${widget.districId}.htm';
-  Response response = await _dio.get(apiUrl);
-  if (response.statusCode == 200) {
-    print('Response data: ${response.data}');
-    CommuneModel communeModel = CommuneModel.fromJson(response.data);
+void _loadDataFromApi() async {
+  if (widget.districId.isEmpty) {
     setState(() {
-      _dataList = communeModel.data;
+      _dataList = [];
     });
-  } else {
-    throw Exception('Failed to load data');
+    return;
   }
-} catch (e) {
-  print('Error loading data: $e');
-  setState(() {
-    _dataList = [];
-  });
+  try {
+    apiUrl = 'https://esgoo.net/api-tinhthanh/3/${widget.districId}.htm';
+    Response response = await _dio.get(apiUrl);
+    if (response.statusCode == 200) {
+      
+      CommuneModel communeModel = CommuneModel.fromJson(response.data);
+      setState(() {
+        _dataList = communeModel.data?.map((data) => Data3(
+          id: data.id,
+          name: data.name,
+          nameEn: data.nameEn,
+          fullName: data.fullName,
+          fullNameEn: data.fullNameEn,
+          latitude: data.latitude,
+          longitude: data.longitude
+        )).toList();
+      });
+    } else {
+      throw Exception('Failed to load data');
+    }
+  } catch (e) {
+    print('Error loading data: $e');
+    setState(() {
+      _dataList = [];
+    });
+  }
 }
 
-  }
 
   void _showModalBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -117,6 +130,8 @@ try {
                     return ListTile(
                       title: Text(data.name ?? ''),
                       onTap: () {
+                         widget.onCommuneSelected(
+                            data.id ?? '');
                         setState(() {
                           _chooseCommnune = data.name;
                         });

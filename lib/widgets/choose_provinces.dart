@@ -8,6 +8,7 @@ class ChooseProvinces extends StatefulWidget {
   const ChooseProvinces({super.key, required this.onProvinceSelected});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ChooseProvincesState createState() => _ChooseProvincesState();
 }
 
@@ -28,9 +29,17 @@ class _ChooseProvincesState extends State<ChooseProvinces> {
       Response response = await _dio.get(apiUrl);
       if (response.statusCode == 200) {
         ProvinceModel provinceModel = ProvinceModel.fromJson(response.data);
-        setState(() {
-          _dataList = provinceModel.data;
-        });
+       setState(() {
+        _dataList = provinceModel.data?.map((data) => Data(
+          id: data.id,
+          name: data.name,
+          nameEn: data.nameEn,
+          fullName: data.fullName,
+          fullNameEn: data.fullNameEn,
+          latitude: data.latitude,
+          longitude: data.longitude
+        )).toList();
+      });
       } else {
         throw Exception('Failed to load data');
       }
