@@ -1,20 +1,18 @@
-
-
-import 'package:chon_tinh/model/distric_model.dart';
-
-class ProvinceModel {
+class CommuneModel {
   int? error;
   String? errorText;
   String? dataName;
-  List<Data>? data;
+  List<Data3>? data;
 
-  ProvinceModel({this.error, this.errorText, this.dataName, this.data});
+  CommuneModel({this.error, this.errorText, this.dataName, this.data});
 
-  ProvinceModel.fromJson(Map<String, dynamic> json) {
+  CommuneModel.fromJson(Map<String, dynamic> json) {
     error = json["error"];
     errorText = json["error_text"];
     dataName = json["data_name"];
-    data = json["data"] == null ? null : (json["data"] as List).map((e) => Data.fromJson(e)).toList();
+    data = json["data"] == null
+        ? null
+        : (json["data"] as List).map((e) => Data3.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -29,7 +27,9 @@ class ProvinceModel {
   }
 }
 
-class Data {
+
+
+class Data3 {
   String? id;
   String? name;
   String? nameEn;
@@ -37,11 +37,17 @@ class Data {
   String? fullNameEn;
   String? latitude;
   String? longitude;
-  List<Data2>? data2;
 
-  Data({this.id, this.name, this.nameEn, this.fullName, this.fullNameEn, this.latitude, this.longitude, this.data2});
+  Data3(
+      {this.id,
+      this.name,
+      this.nameEn,
+      this.fullName,
+      this.fullNameEn,
+      this.latitude,
+      this.longitude});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  Data3.fromJson(Map<String, dynamic> json) {
     id = json["id"];
     name = json["name"];
     nameEn = json["name_en"];
@@ -49,7 +55,6 @@ class Data {
     fullNameEn = json["full_name_en"];
     latitude = json["latitude"];
     longitude = json["longitude"];
-    data2 = json["data2"] == null ? null : (json["data2"] as List).map((e) => Data2.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -61,10 +66,6 @@ class Data {
     _data["full_name_en"] = fullNameEn;
     _data["latitude"] = latitude;
     _data["longitude"] = longitude;
-    if (data2 != null) {
-      _data["data2"] = data2?.map((e) => e.toJson()).toList();
-    }
     return _data;
   }
 }
-

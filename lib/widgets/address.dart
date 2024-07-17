@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class DiaChi extends StatelessWidget {
-  const DiaChi({super.key});
+class Address extends StatelessWidget {
+  const Address({super.key});
 
   @override
   Widget build(BuildContext context) {

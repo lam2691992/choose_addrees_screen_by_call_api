@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 
-class TieptucButton extends StatelessWidget{
-  const TieptucButton({super.key});
+class NextButton extends StatelessWidget{
+  const NextButton({super.key});
   
   @override
   Widget build(BuildContext context) {

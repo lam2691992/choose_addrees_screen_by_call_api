@@ -1,24 +1,22 @@
+import 'package:chon_tinh/model/commune_model.dart'  ;
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:chon_tinh/model/distric_model.dart';
 
-class ChooseDistrics extends StatefulWidget {
+
+class ChooseCommunes extends StatefulWidget {
   final String provinceId;
+  final String districId;
 
-  const ChooseDistrics(
-      {super.key,
-      required this.provinceId,
-      required void Function(String districId) onDistricSelected});
+  const ChooseCommunes({super.key, required this.provinceId, required this.districId});
 
   @override
-  _ChooseDistricsState createState() => _ChooseDistricsState();
-
-  void onDistricSelected(String s) {}
+  // ignore: library_private_types_in_public_api
+  _ChooseCommunesState createState() => _ChooseCommunesState();
 }
 
-class _ChooseDistricsState extends State<ChooseDistrics> {
-  String? _chooseDistrict;
-  List<Data2>? _dataList;
+class _ChooseCommunesState extends State<ChooseCommunes> {
+  String? _chooseCommnune;
+  List<Data3>? _dataList;
   final Dio _dio = Dio();
   late String apiUrl;
 
@@ -29,37 +27,39 @@ class _ChooseDistricsState extends State<ChooseDistrics> {
   }
 
   @override
-  void didUpdateWidget(ChooseDistrics oldWidget) {
+  void didUpdateWidget(ChooseCommunes oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.provinceId != widget.provinceId) {
+    if (oldWidget.districId != widget.districId) {
       _loadDataFromApi();
     }
   }
 
   void _loadDataFromApi() async {
-    if (widget.provinceId.isEmpty) {
+    if (widget.districId.isEmpty) {
       setState(() {
         _dataList = [];
       });
       return;
     }
-    try {
-      apiUrl = 'https://esgoo.net/api-tinhthanh/2/${widget.provinceId}.htm';
-      Response response = await _dio.get(apiUrl);
-      if (response.statusCode == 200) {
-        DistricModel districModel = DistricModel.fromJson(response.data);
-        setState(() {
-          _dataList = districModel.data;
-        });
-      } else {
-        throw Exception('Failed to load data');
-      }
-    } catch (e) {
-      print('Error loading data: $e');
-      setState(() {
-        _dataList = [];
-      });
-    }
+try {
+  apiUrl = 'https://esgoo.net/api-tinhthanh/3/${widget.districId}.htm';
+  Response response = await _dio.get(apiUrl);
+  if (response.statusCode == 200) {
+    print('Response data: ${response.data}');
+    CommuneModel communeModel = CommuneModel.fromJson(response.data);
+    setState(() {
+      _dataList = communeModel.data;
+    });
+  } else {
+    throw Exception('Failed to load data');
+  }
+} catch (e) {
+  print('Error loading data: $e');
+  setState(() {
+    _dataList = [];
+  });
+}
+
   }
 
   void _showModalBottomSheet(BuildContext context) {
@@ -83,7 +83,7 @@ class _ChooseDistricsState extends State<ChooseDistrics> {
                   const Expanded(
                     child: Center(
                       child: Text(
-                        'Quận/huyện',
+                        'Xã/phường',
                         style: TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
@@ -106,21 +106,19 @@ class _ChooseDistricsState extends State<ChooseDistrics> {
               )
             else if (_dataList!.isEmpty)
               const Center(
-                child: Text('Không có quận/huyện nào được tìm thấy.'),
+                child: Text('Không có Xã/phường nào được tìm thấy.'),
               )
             else
               Expanded(
                 child: ListView.builder(
                   itemCount: _dataList!.length,
                   itemBuilder: (BuildContext context, int index) {
-                    Data2 data = _dataList![index];
+                    Data3 data = _dataList![index];
                     return ListTile(
                       title: Text(data.name ?? ''),
                       onTap: () {
-                        widget.onDistricSelected(
-                            data.id ?? ''); // Truyền id của huyện
                         setState(() {
-                          _chooseDistrict = data.name;
+                          _chooseCommnune = data.name;
                         });
                         Navigator.pop(context);
                       },
@@ -142,9 +140,9 @@ class _ChooseDistricsState extends State<ChooseDistrics> {
         onTap: () => _showModalBottomSheet(context),
         child: AbsorbPointer(
           child: TextField(
-            controller: TextEditingController(text: _chooseDistrict),
+            controller: TextEditingController(text: _chooseCommnune),
             decoration: const InputDecoration(
-              hintText: 'Quận/huyện',
+              hintText: 'Xã/phường',
               hintStyle: TextStyle(fontWeight: FontWeight.w300),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10)),

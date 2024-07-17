@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class HoTen extends StatelessWidget {
-  const HoTen({super.key});
+class FullName extends StatelessWidget {
+  const FullName({super.key});
   @override
   Widget build(BuildContext context) {
     return const Padding(

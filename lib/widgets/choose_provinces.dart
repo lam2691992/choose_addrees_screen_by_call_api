@@ -1,22 +1,21 @@
-import 'package:chon_tinh/model/province_model.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:chon_tinh/model/province_model.dart';
 
+class ChooseProvinces extends StatefulWidget {
+  final Function(String provinceId) onProvinceSelected;
 
-
-class ChonTinh extends StatefulWidget {
-  const ChonTinh({super.key});
+  const ChooseProvinces({super.key, required this.onProvinceSelected});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _ChonTinhState createState() => _ChonTinhState();
+  _ChooseProvincesState createState() => _ChooseProvincesState();
 }
 
-class _ChonTinhState extends State<ChonTinh> {
-  String? _selectedTinh;
+class _ChooseProvincesState extends State<ChooseProvinces> {
+  String? _chooseProvinces;
   List<Data>? _dataList; // Danh sách dữ liệu từ API
   final Dio _dio = Dio(); // Khởi tạo một instance của Dio
-  final String apiUrl = 'https://esgoo.net/api-tinhthanh/4/0.htm';
+  final String apiUrl = 'https://esgoo.net/api-tinhthanh/1/0.htm';
 
   @override
   void initState() {
@@ -43,24 +42,63 @@ class _ChonTinhState extends State<ChonTinh> {
   void _showModalBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+      ),
       builder: (BuildContext context) {
-        return _dataList != null
-            ? ListView.builder(
-                itemCount: _dataList!.length,
-                itemBuilder: (BuildContext context, int index) {
-                  Data data = _dataList![index];
-                  return ListTile(
-                    title: Text(data.name ?? ''),
-                    onTap: () {
-                      setState(() {
-                        _selectedTinh = data.name;
-                      });
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 199, 220, 230),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+              ),
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: Center(
+                      child: Text(
+                        'Tỉnh/thành phố',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () {
                       Navigator.pop(context);
                     },
-                  );
-                },
-              )
-            : const Center(child: CircularProgressIndicator());
+                  ),
+                ],
+              ),
+            ),
+            _dataList != null
+                ? Expanded(
+                    child: ListView.builder(
+                      itemCount: _dataList!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        Data data = _dataList![index];
+                        return ListTile(
+                          title: Text(data.name ?? ''),
+                          onTap: () {
+                            setState(() {
+                              _chooseProvinces = data.name ?? '';
+                            });
+                            widget.onProvinceSelected(data.id.toString());
+                            Navigator.pop(context);
+                          },
+                        );
+                      },
+                    ),
+                  )
+                : const Center(child: CircularProgressIndicator()),
+          ],
+        );
       },
     );
   }
@@ -73,7 +111,7 @@ class _ChonTinhState extends State<ChonTinh> {
         onTap: () => _showModalBottomSheet(context),
         child: AbsorbPointer(
           child: TextField(
-            controller: TextEditingController(text: _selectedTinh),
+            controller: TextEditingController(text: _chooseProvinces),
             decoration: const InputDecoration(
               hintText: 'Thành phố/Tỉnh',
               hintStyle: TextStyle(fontWeight: FontWeight.w300),
