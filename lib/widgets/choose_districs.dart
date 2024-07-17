@@ -11,13 +11,14 @@ class ChooseDistrics extends StatefulWidget {
       required void Function(String districId) onDistricSelected});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ChooseDistricsState createState() => _ChooseDistricsState();
 
   void onDistricSelected(String s) {}
 }
 
 class _ChooseDistricsState extends State<ChooseDistrics> {
-  String? _chooseDistrict;
+  String? _chooseDistric;
   List<Data2>? _dataList;
   final Dio _dio = Dio();
   late String apiUrl;
@@ -120,7 +121,7 @@ class _ChooseDistricsState extends State<ChooseDistrics> {
                         widget.onDistricSelected(
                             data.id ?? ''); // Truyền id của huyện
                         setState(() {
-                          _chooseDistrict = data.name;
+                          _chooseDistric = data.name;
                         });
                         Navigator.pop(context);
                       },
@@ -142,7 +143,7 @@ class _ChooseDistricsState extends State<ChooseDistrics> {
         onTap: () => _showModalBottomSheet(context),
         child: AbsorbPointer(
           child: TextField(
-            controller: TextEditingController(text: _chooseDistrict),
+            controller: TextEditingController(text: _chooseDistric),
             decoration: const InputDecoration(
               hintText: 'Quận/huyện',
               hintStyle: TextStyle(fontWeight: FontWeight.w300),
