@@ -3,23 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
 
-class ChooseCommunes extends StatefulWidget {
+class ChooseCommune extends StatefulWidget {
+final String provinceId;
+  final String districId; final void Function(String communeId, String communeName) onCommuneSelected;
 
-  final String districId;
-
-  const ChooseCommunes({super.key,
+ const ChooseCommune({
+    super.key,
     required this.districId,
-  required void Function(String communeId)
-   onComunesSelected});
+    required this.onCommuneSelected,
+    required this.provinceId,
+  });
+
 
   @override
   // ignore: library_private_types_in_public_api
-  _ChooseCommunesState createState() => _ChooseCommunesState();
+  _ChooseCommuneState createState() => _ChooseCommuneState();
   
-  void onCommuneSelected(String s) {}
+  
 }
 
-class _ChooseCommunesState extends State<ChooseCommunes> {
+class _ChooseCommuneState extends State<ChooseCommune> {
   String? _chooseCommnune;
   List<Data3>? _dataList;
   final Dio _dio = Dio();
@@ -32,7 +35,7 @@ class _ChooseCommunesState extends State<ChooseCommunes> {
   }
 
   @override
-  void didUpdateWidget(ChooseCommunes oldWidget) {
+  void didUpdateWidget(ChooseCommune oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.districId != widget.districId) {
       _loadDataFromApi();
@@ -131,7 +134,8 @@ void _loadDataFromApi() async {
                       title: Text(data.name ?? ''),
                       onTap: () {
                          widget.onCommuneSelected(
-                            data.id ?? '');
+                            data.id ?? '',
+                            data.name ?? '');
                         setState(() {
                           _chooseCommnune = data.name;
                         });

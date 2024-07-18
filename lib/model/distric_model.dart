@@ -1,11 +1,8 @@
-
-
-
 class DistricModel {
   int? error;
   String? errorText;
   String? dataName;
-  List<Data2>? data;
+  List<Data>? data;
 
   DistricModel({this.error, this.errorText, this.dataName, this.data});
 
@@ -13,7 +10,9 @@ class DistricModel {
     error = json["error"];
     errorText = json["error_text"];
     dataName = json["data_name"];
-    data = json["data"] == null ? null : (json["data"] as List).map((e) => Data2.fromJson(e)).toList();
+    data = json["data"] == null
+        ? null
+        : (json["data"] as List).map((e) => Data.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -28,7 +27,54 @@ class DistricModel {
   }
 }
 
+class Data {
+  String? id;
+  String? name;
+  String? nameEn;
+  String? fullName;
+  String? fullNameEn;
+  String? latitude;
+  String? longitude;
+  List<Data2>? data2;
 
+  Data(
+      {this.id,
+      this.name,
+      this.nameEn,
+      this.fullName,
+      this.fullNameEn,
+      this.latitude,
+      this.longitude,
+      this.data2});
+
+  Data.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
+    name = json["name"];
+    nameEn = json["name_en"];
+    fullName = json["full_name"];
+    fullNameEn = json["full_name_en"];
+    latitude = json["latitude"];
+    longitude = json["longitude"];
+    data2 = json["data2"] == null
+        ? null
+        : (json["data2"] as List).map((e) => Data2.fromJson(e)).toList();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["id"] = id;
+    _data["name"] = name;
+    _data["name_en"] = nameEn;
+    _data["full_name"] = fullName;
+    _data["full_name_en"] = fullNameEn;
+    _data["latitude"] = latitude;
+    _data["longitude"] = longitude;
+    if (data2 != null) {
+      _data["data2"] = data2?.map((e) => e.toJson()).toList();
+    }
+    return _data;
+  }
+}
 
 class Data2 {
   String? id;
@@ -40,7 +86,15 @@ class Data2 {
   String? longitude;
   List<Data3>? data3;
 
-  Data2({this.id, this.name, this.nameEn, this.fullName, this.fullNameEn, this.latitude, this.longitude, this.data3});
+  Data2(
+      {this.id,
+      this.name,
+      this.nameEn,
+      this.fullName,
+      this.fullNameEn,
+      this.latitude,
+      this.longitude,
+      this.data3});
 
   Data2.fromJson(Map<String, dynamic> json) {
     id = json["id"];
@@ -50,7 +104,9 @@ class Data2 {
     fullNameEn = json["full_name_en"];
     latitude = json["latitude"];
     longitude = json["longitude"];
-    data3 = json["data3"] == null ? null : (json["data3"] as List).map((e) => Data3.fromJson(e)).toList();
+    data3 = json["data3"] == null
+        ? null
+        : (json["data3"] as List).map((e) => Data3.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -68,6 +124,7 @@ class Data2 {
     return _data;
   }
 }
+
 class Data3 {
   String? id;
   String? name;

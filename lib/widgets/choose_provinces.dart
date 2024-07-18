@@ -10,6 +10,7 @@ class ChooseProvinces extends StatefulWidget {
   @override
   // ignore: library_private_types_in_public_api
   _ChooseProvincesState createState() => _ChooseProvincesState();
+
 }
 
 class _ChooseProvincesState extends State<ChooseProvinces> {

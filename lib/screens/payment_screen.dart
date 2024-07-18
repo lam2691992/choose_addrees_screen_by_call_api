@@ -33,7 +33,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     _selectedCommuneId = null;
   });
 }
-  void _onCommunesSelected ( String communeId) {
+  void _onCommuneSelected ( String communeId) {
     setState(() {
       _selectedCommuneId = communeId;
     });
@@ -112,9 +112,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: ChooseCommunes(
-                districId: _selectedDistricId ?? '',
-                onComunesSelected: _onCommunesSelected,
+              child: ChooseCommune(
+                districId: _selectedDistricId ?? '', provinceId: '', onCommuneSelected: (String communeId, String communeName) {  },
+               
               ),
             ),
             const SizedBox(
