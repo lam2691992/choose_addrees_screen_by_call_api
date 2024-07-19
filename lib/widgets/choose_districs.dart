@@ -4,17 +4,17 @@ import 'package:chon_tinh/model/distric_model.dart';
 
 class ChooseDistrics extends StatefulWidget {
   final String provinceId;
+  final void Function(String districId) onDistricSelected;
 
-  const ChooseDistrics(
-      {super.key,
-      required this.provinceId,
-      required void Function(String districId) onDistricSelected});
+  const ChooseDistrics({
+    super.key,
+    required this.provinceId,
+    required this.onDistricSelected,
+  });
 
   @override
   // ignore: library_private_types_in_public_api
   _ChooseDistricsState createState() => _ChooseDistricsState();
-
-  void onDistricSelected(String s) {}
 }
 
 class _ChooseDistricsState extends State<ChooseDistrics> {
@@ -22,6 +22,7 @@ class _ChooseDistricsState extends State<ChooseDistrics> {
   List<Data2>? _dataList;
   final Dio _dio = Dio();
   late String apiUrl;
+  final TextEditingController _textController = TextEditingController();
 
   @override
   void initState() {
@@ -33,6 +34,12 @@ class _ChooseDistricsState extends State<ChooseDistrics> {
   void didUpdateWidget(ChooseDistrics oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.provinceId != widget.provinceId) {
+      // Reset giá trị huyện khi tỉnh thay đổi
+      setState(() {
+        _chooseDistric = null;
+        _textController.text = '';
+        _dataList = null; // Reset the data list as well
+      });
       _loadDataFromApi();
     }
   }
@@ -50,15 +57,15 @@ class _ChooseDistricsState extends State<ChooseDistrics> {
       if (response.statusCode == 200) {
         DistricModel districModel = DistricModel.fromJson(response.data);
         setState(() {
-           _dataList = districModel.data?.map((data) => Data2(
-          id: data.id,
-          name: data.name,
-          nameEn: data.nameEn,
-          fullName: data.fullName,
-          fullNameEn: data.fullNameEn,
-          latitude: data.latitude,
-          longitude: data.longitude
-        )).toList();
+          _dataList = districModel.data?.map((data) => Data2(
+            id: data.id,
+            name: data.name,
+            nameEn: data.nameEn,
+            fullName: data.fullName,
+            fullNameEn: data.fullNameEn,
+            latitude: data.latitude,
+            longitude: data.longitude
+          )).toList();
         });
       } else {
         throw Exception('Failed to load data');
@@ -126,10 +133,10 @@ class _ChooseDistricsState extends State<ChooseDistrics> {
                     return ListTile(
                       title: Text(data.name ?? ''),
                       onTap: () {
-                        widget.onDistricSelected(
-                            data.id ?? ''); // Truyền id của huyện
+                        widget.onDistricSelected(data.id ?? ''); // Truyền id của huyện
                         setState(() {
                           _chooseDistric = data.name;
+                          _textController.text = _chooseDistric!;
                         });
                         Navigator.pop(context);
                       },
@@ -151,7 +158,7 @@ class _ChooseDistricsState extends State<ChooseDistrics> {
         onTap: () => _showModalBottomSheet(context),
         child: AbsorbPointer(
           child: TextField(
-            controller: TextEditingController(text: _chooseDistric),
+            controller: _textController,
             decoration: const InputDecoration(
               hintText: 'Quận/huyện',
               hintStyle: TextStyle(fontWeight: FontWeight.w300),

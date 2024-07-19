@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 
+class NextButton extends StatelessWidget {
+  final bool isEnabled;
+  final VoidCallback onPressed;
 
-class NextButton extends StatelessWidget{
-  const NextButton({super.key});
-  
+  const NextButton({
+    super.key,
+    required this.isEnabled,
+    required this.onPressed,
+  });
+
   @override
   Widget build(BuildContext context) {
-   return TextButton(onPressed: () {
-    print('Tiếp tục');
-   },
-   style: const ButtonStyle(
-    foregroundColor: WidgetStatePropertyAll(Colors.black),
-    backgroundColor: WidgetStatePropertyAll(Colors.grey),
-    padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 170.0,))
-    ),
-    child: const Text('Tiếp tục'),);
+    return ElevatedButton(
+      onPressed: isEnabled ? onPressed : null,
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.white,
+        backgroundColor: isEnabled ? Colors.blue : Colors.grey,
+        padding: const EdgeInsets.symmetric(horizontal: 160.0),
+      ),
+      child: const Text('Tiếp tục'),
+    );
   }
-  
-
-  
 }

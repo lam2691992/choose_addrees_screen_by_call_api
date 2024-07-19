@@ -13,6 +13,7 @@ class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _PaymentScreenState createState() => _PaymentScreenState();
 }
 
@@ -25,19 +26,34 @@ class _PaymentScreenState extends State<PaymentScreen> {
     setState(() {
       _selectedProvinceId = provinceId;
       _selectedDistricId = null;
+      _selectedCommuneId = null;
     });
   }
-  void _onDistricSelected (String districId) {
-  setState(() {
-    _selectedDistricId = districId;
-    _selectedCommuneId = null;
-  });
-}
-  void _onCommuneSelected ( String communeId) {
+
+  void _onDistricSelected(String districId) {
+    setState(() {
+      _selectedDistricId = districId;
+      _selectedCommuneId = null;
+    });
+  }
+
+  void _onCommuneSelected(String communeId) {
     setState(() {
       _selectedCommuneId = communeId;
     });
   }
+
+  bool _isNextButtonEnabled() {
+    return _selectedProvinceId != null &&
+        _selectedDistricId != null &&
+        _selectedCommuneId != null;
+  }
+
+  void _onNextButtonPressed() {
+    // Handle next button pressed logic here
+    print('Tiếp tục');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,14 +129,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: ChooseCommune(
-                districId: _selectedDistricId ?? '', provinceId: '', onCommuneSelected: (String communeId, String communeName) {  },
-               
+                districId: _selectedDistricId ?? '',
+                onCommuneSelected: _onCommuneSelected,
+                provinceId: '',
               ),
             ),
             const SizedBox(
               height: 12,
             ),
-            const NextButton(),
+            NextButton(
+              isEnabled: _isNextButtonEnabled(),
+              onPressed: _onNextButtonPressed,
+            ),
           ],
         ),
       ),

@@ -1,25 +1,20 @@
-import 'package:chon_tinh/model/commune_model.dart'  ;
+import 'package:chon_tinh/model/commune_model.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
-
 class ChooseCommune extends StatefulWidget {
-final String provinceId;
-  final String districId; final void Function(String communeId, String communeName) onCommuneSelected;
+  final String districId;
 
- const ChooseCommune({
-    super.key,
-    required this.districId,
-    required this.onCommuneSelected,
-    required this.provinceId,
-  });
-
+  const ChooseCommune(
+      {super.key,
+      required this.districId,
+      required void Function(String communeId) onCommuneSelected, 
+      required String provinceId});
 
   @override
   // ignore: library_private_types_in_public_api
   _ChooseCommuneState createState() => _ChooseCommuneState();
-  
-  
+  void onCommuneSelected(String s) {}
 }
 
 class _ChooseCommuneState extends State<ChooseCommune> {
@@ -27,6 +22,7 @@ class _ChooseCommuneState extends State<ChooseCommune> {
   List<Data3>? _dataList;
   final Dio _dio = Dio();
   late String apiUrl;
+   final TextEditingController _textController = TextEditingController();
 
   @override
   void initState() {
@@ -37,46 +33,50 @@ class _ChooseCommuneState extends State<ChooseCommune> {
   @override
   void didUpdateWidget(ChooseCommune oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.districId != widget.districId) {
+    if (oldWidget.districId != widget.districId) { 
+      setState(() {
+        _chooseCommnune = null;
+        _textController.text = '';
+        _dataList = null;
+      });
       _loadDataFromApi();
     }
   }
 
-void _loadDataFromApi() async {
-  if (widget.districId.isEmpty) {
-    setState(() {
-      _dataList = [];
-    });
-    return;
-  }
-  try {
-    apiUrl = 'https://esgoo.net/api-tinhthanh/3/${widget.districId}.htm';
-    Response response = await _dio.get(apiUrl);
-    if (response.statusCode == 200) {
-      
-      CommuneModel communeModel = CommuneModel.fromJson(response.data);
+  void _loadDataFromApi() async {
+    if (widget.districId.isEmpty) {
       setState(() {
-        _dataList = communeModel.data?.map((data) => Data3(
-          id: data.id,
-          name: data.name,
-          nameEn: data.nameEn,
-          fullName: data.fullName,
-          fullNameEn: data.fullNameEn,
-          latitude: data.latitude,
-          longitude: data.longitude
-        )).toList();
+        _dataList = [];
       });
-    } else {
-      throw Exception('Failed to load data');
+      return;
     }
-  } catch (e) {
-    print('Error loading data: $e');
-    setState(() {
-      _dataList = [];
-    });
+    try {
+      apiUrl = 'https://esgoo.net/api-tinhthanh/3/${widget.districId}.htm';
+      Response response = await _dio.get(apiUrl);
+      if (response.statusCode == 200) {
+        CommuneModel communeModel = CommuneModel.fromJson(response.data);
+        setState(() {
+          _dataList = communeModel.data
+              ?.map((data) => Data3(
+                  id: data.id,
+                  name: data.name,
+                  nameEn: data.nameEn,
+                  fullName: data.fullName,
+                  fullNameEn: data.fullNameEn,
+                  latitude: data.latitude,
+                  longitude: data.longitude))
+              .toList();
+        });
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print('Error loading data: $e');
+      setState(() {
+        _dataList = [];
+      });
+    }
   }
-}
-
 
   void _showModalBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -133,11 +133,12 @@ void _loadDataFromApi() async {
                     return ListTile(
                       title: Text(data.name ?? ''),
                       onTap: () {
-                         widget.onCommuneSelected(
-                            data.id ?? '',
-                            data.name ?? '');
+                        widget.onCommuneSelected(
+                          data.id ?? '',
+                        );
                         setState(() {
                           _chooseCommnune = data.name;
+                          _textController.text = _chooseCommnune!;
                         });
                         Navigator.pop(context);
                       },
