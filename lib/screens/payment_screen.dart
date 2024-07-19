@@ -8,12 +8,12 @@ import 'package:chon_tinh/widgets/phone_number.dart';
 import 'package:chon_tinh/widgets/next_button.dart';
 import 'package:chon_tinh/widgets/icons_row.dart';
 import 'package:chon_tinh/widgets/fullname.dart';
+import 'package:chon_tinh/services/province_service.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _PaymentScreenState createState() => _PaymentScreenState();
 }
 
@@ -21,6 +21,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
   String? _selectedProvinceId;
   String? _selectedDistricId;
   String? _selectedCommuneId;
+
+  final ProvinceService _provinceService = ProvinceService();
 
   void _onProvinceSelected(String provinceId) {
     setState(() {
@@ -44,14 +46,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   bool _isNextButtonEnabled() {
-    return _selectedProvinceId != null &&
-        _selectedDistricId != null &&
-        _selectedCommuneId != null;
+    return _selectedProvinceId != null && _selectedDistricId != null && _selectedCommuneId != null;
   }
 
   void _onNextButtonPressed() {
-    // Handle next button pressed logic here
-    print('Tiếp tục');
+    // Replace with your navigation logic
+    print('Navigating to next screen...');
   }
 
   @override
