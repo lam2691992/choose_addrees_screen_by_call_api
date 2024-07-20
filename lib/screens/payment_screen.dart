@@ -14,6 +14,7 @@ class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _PaymentScreenState createState() => _PaymentScreenState();
 }
 
@@ -23,6 +24,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   String? _selectedCommuneId;
 
   final ProvinceService _provinceService = ProvinceService();
+
 
   void _onProvinceSelected(String provinceId) {
     setState(() {
@@ -46,11 +48,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   bool _isNextButtonEnabled() {
-    return _selectedProvinceId != null && _selectedDistricId != null && _selectedCommuneId != null;
+    return _selectedProvinceId != null &&
+        _selectedDistricId != null &&
+        _selectedCommuneId != null;
   }
 
   void _onNextButtonPressed() {
     // Replace with your navigation logic
+    // ignore: avoid_print
     print('Navigating to next screen...');
   }
 

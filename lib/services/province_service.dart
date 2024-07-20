@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:chon_tinh/model/province_model.dart';
@@ -17,7 +16,7 @@ class ProvinceService {
         throw Exception('Failed to load data');
       }
     } catch (e) {
-      print('Error loading data: $e');
+    
       return [];
     }
   }
@@ -28,7 +27,7 @@ class ProvinceService {
     Function(String) onProvinceSelected,
   ) {
     showModalBottomSheet(
-      context: context,
+      context: context, 
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
       ),
@@ -38,7 +37,10 @@ class ProvinceService {
             String searchQuery = '';
 
             List<Data> filteredProvinces = provinces.where((province) {
-              return province.name?.toLowerCase().contains(searchQuery.toLowerCase()) ?? false;
+              return province.name
+                      ?.toLowerCase()
+                      .contains(searchQuery.toLowerCase()) ??
+                  false;
             }).toList();
 
             return Column(
@@ -47,7 +49,8 @@ class ProvinceService {
                 Container(
                   decoration: const BoxDecoration(
                     color: Color.fromARGB(255, 199, 220, 230),
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(10)),
                   ),
                   padding: const EdgeInsets.all(10.0),
                   child: Row(
@@ -75,7 +78,7 @@ class ProvinceService {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
-                    autofocus: true,  // Tự động focus khi mở modal
+                   
                     decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       hintText: 'Tìm kiếm tỉnh/thành phố',
@@ -85,7 +88,10 @@ class ProvinceService {
                       setState(() {
                         searchQuery = value;
                         filteredProvinces = provinces.where((province) {
-                          return province.name?.toLowerCase().contains(searchQuery.toLowerCase()) ?? false;
+                          return province.name
+                                  ?.toLowerCase()
+                                  .contains(searchQuery.toLowerCase()) ??
+                              false;
                         }).toList();
                       });
                     },

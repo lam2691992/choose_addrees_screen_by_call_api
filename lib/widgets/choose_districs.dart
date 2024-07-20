@@ -57,21 +57,21 @@ class _ChooseDistricsState extends State<ChooseDistrics> {
       if (response.statusCode == 200) {
         DistricModel districModel = DistricModel.fromJson(response.data);
         setState(() {
-          _dataList = districModel.data?.map((data) => Data2(
-            id: data.id,
-            name: data.name,
-            nameEn: data.nameEn,
-            fullName: data.fullName,
-            fullNameEn: data.fullNameEn,
-            latitude: data.latitude,
-            longitude: data.longitude
-          )).toList();
+          _dataList = districModel.data
+              ?.map((data) => Data2(
+                  id: data.id,
+                  name: data.name,
+                  nameEn: data.nameEn,
+                  fullName: data.fullName,
+                  fullNameEn: data.fullNameEn,
+                  latitude: data.latitude,
+                  longitude: data.longitude))
+              .toList();
         });
       } else {
         throw Exception('Failed to load data');
       }
     } catch (e) {
-      print('Error loading data: $e');
       setState(() {
         _dataList = [];
       });
@@ -133,7 +133,8 @@ class _ChooseDistricsState extends State<ChooseDistrics> {
                     return ListTile(
                       title: Text(data.name ?? ''),
                       onTap: () {
-                        widget.onDistricSelected(data.id ?? ''); // Truyền id của huyện
+                        widget.onDistricSelected(
+                            data.id ?? ''); // Truyền id của huyện
                         setState(() {
                           _chooseDistric = data.name;
                           _textController.text = _chooseDistric!;

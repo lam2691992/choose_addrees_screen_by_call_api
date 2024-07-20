@@ -9,6 +9,7 @@ class ChooseProvinces extends StatefulWidget {
   const ChooseProvinces({super.key, required this.onProvinceSelected});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ChooseProvincesState createState() => _ChooseProvincesState();
 }
 
