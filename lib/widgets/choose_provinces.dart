@@ -1,33 +1,27 @@
 // choose_provinces.dart
 import 'package:flutter/material.dart';
-import 'package:chon_tinh/model/province_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chon_tinh/services/province_service.dart';
+import 'province_bloc.dart';
 
-class ChooseProvinces extends StatefulWidget {
+class ChooseProvinces extends StatelessWidget {
   final Function(String provinceId) onProvinceSelected;
 
   const ChooseProvinces({super.key, required this.onProvinceSelected});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _ChooseProvincesState createState() => _ChooseProvincesState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => ProvinceBloc(ProvinceService())..add(LoadProvinces()),
+      child: ChooseProvincesContent(onProvinceSelected: onProvinceSelected),
+    );
+  }
 }
 
-class _ChooseProvincesState extends State<ChooseProvinces> {
-  String? _chooseProvinces;
-  final ProvinceService _provinceService = ProvinceService();
-  List<Data> _provinces = [];
+class ChooseProvincesContent extends StatelessWidget {
+  final Function(String provinceId) onProvinceSelected;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadProvinces();
-  }
-
-  void _loadProvinces() async {
-    _provinces = await _provinceService.fetchProvinces();
-    setState(() {});
-  }
+  const ChooseProvincesContent({super.key, required this.onProvinceSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -35,28 +29,37 @@ class _ChooseProvincesState extends State<ChooseProvinces> {
       padding: const EdgeInsets.all(8),
       child: GestureDetector(
         onTap: () {
-          _provinceService.showProvinceModalBottomSheet(
-            context,
-            _provinces,
-            (provinceId) {
-              setState(() {
-                _chooseProvinces = _provinces.firstWhere((p) => p.id == provinceId).name;
-              });
-              widget.onProvinceSelected(provinceId);
-            },
-          );
+          final state = context.read<ProvinceBloc>().state;
+          if (state is ProvinceLoaded) {
+            ProvinceService().showProvinceModalBottomSheet(
+              context,
+              state.provinces,
+              (provinceId) {
+                context.read<ProvinceBloc>().add(SelectProvince(provinceId));
+                onProvinceSelected(provinceId);
+              },
+            );
+          }
         },
         child: AbsorbPointer(
-          child: TextField(
-            controller: TextEditingController(text: _chooseProvinces),
-            decoration: const InputDecoration(
-              hintText: 'Thành phố/Tỉnh',
-              hintStyle: TextStyle(fontWeight: FontWeight.w300),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-              suffixIcon: Icon(Icons.arrow_drop_down),
-            ),
+          child: BlocBuilder<ProvinceBloc, ProvinceState>(
+            builder: (context, state) {
+              String? selectedProvinceName;
+              if (state is ProvinceSelected) {
+                selectedProvinceName = state.provinceName;
+              }
+              return TextField(
+                controller: TextEditingController(text: selectedProvinceName),
+                decoration: const InputDecoration(
+                  hintText: 'Thành phố/Tỉnh',
+                  hintStyle: TextStyle(fontWeight: FontWeight.w300),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  suffixIcon: Icon(Icons.arrow_drop_down),
+                ),
+              );
+            },
           ),
         ),
       ),

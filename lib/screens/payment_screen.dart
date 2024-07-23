@@ -1,6 +1,7 @@
+// payment_screen.dart
 import 'package:flutter/material.dart';
-import 'package:chon_tinh/widgets/choose_districs.dart';
 import 'package:chon_tinh/widgets/choose_provinces.dart';
+import 'package:chon_tinh/widgets/choose_districs.dart';
 import 'package:chon_tinh/widgets/choose_communes.dart';
 import 'package:chon_tinh/widgets/address.dart';
 import 'package:chon_tinh/widgets/email.dart';
@@ -8,7 +9,6 @@ import 'package:chon_tinh/widgets/phone_number.dart';
 import 'package:chon_tinh/widgets/next_button.dart';
 import 'package:chon_tinh/widgets/icons_row.dart';
 import 'package:chon_tinh/widgets/fullname.dart';
-import 'package:chon_tinh/services/province_service.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
@@ -22,9 +22,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
   String? _selectedProvinceId;
   String? _selectedDistricId;
   String? _selectedCommuneId;
-
-  final ProvinceService _provinceService = ProvinceService();
-
 
   void _onProvinceSelected(String provinceId) {
     setState(() {
