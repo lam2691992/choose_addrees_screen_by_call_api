@@ -1,4 +1,3 @@
-// province_bloc.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chon_tinh/model/province_model.dart';
 import 'package:chon_tinh/services/province_service.dart';
@@ -20,6 +19,8 @@ class SelectProvince extends ProvinceEvent {
   @override
   List<Object?> get props => [provinceId];
 }
+
+class ShowProvinceList extends ProvinceEvent {}
 
 // States
 abstract class ProvinceState extends Equatable {
@@ -43,14 +44,13 @@ class ProvinceLoaded extends ProvinceState {
 class ProvinceSelected extends ProvinceState {
   final String provinceId;
   final String provinceName;
-
-  ProvinceSelected(this.provinceId, this.provinceName);
+  final List<Data> provinces;
+  ProvinceSelected(this.provinceId, this.provinceName, this.provinces);
 
   @override
   List<Object?> get props => [provinceId, provinceName];
 }
 
-// Bloc
 class ProvinceBloc extends Bloc<ProvinceEvent, ProvinceState> {
   final ProvinceService provinceService;
 
@@ -61,14 +61,24 @@ class ProvinceBloc extends Bloc<ProvinceEvent, ProvinceState> {
         final provinces = await provinceService.fetchProvinces();
         emit(ProvinceLoaded(provinces));
       } catch (e) {
-        emit(ProvinceInitial()); // Xử lý lỗi theo nhu cầu của bạn
+        emit(ProvinceInitial());
       }
     });
 
     on<SelectProvince>((event, emit) {
-      final province = (state as ProvinceLoaded).provinces
-          .firstWhere((province) => province.id == event.provinceId);
-      emit(ProvinceSelected(event.provinceId, province.name ?? ''));
+      if (state is ProvinceLoaded) {
+        final province = (state as ProvinceLoaded)
+            .provinces
+            .firstWhere((province) => province.id == event.provinceId);
+        emit(ProvinceSelected(event.provinceId, province.name ?? '', (state as ProvinceLoaded).provinces));
+      }
+    });
+
+    on<ShowProvinceList>((event, emit) {
+      if (state is ProvinceSelected) {
+        final selectedState = state as ProvinceSelected;
+        emit(ProvinceLoaded(selectedState.provinces));
+      }
     });
   }
 }
